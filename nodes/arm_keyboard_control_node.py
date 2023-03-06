@@ -2,8 +2,6 @@
 
 import rospy
 
-from std_msgs.msg import Float64
-
 from pynput import keyboard
 
 import time, math
