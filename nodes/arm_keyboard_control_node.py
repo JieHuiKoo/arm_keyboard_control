@@ -20,8 +20,14 @@ class joint:
         self.name = str(name)
 
     def update_angle(self, delta_angle):
+        
         self.current = self.current + delta_angle
-        print("Joint name: " + self.name + " | Angle: " + str(self.current))
+
+        if self.current > self.max:
+            self.current = self.max
+        if self.current < self.min:
+            self.current = self.min
+        # print("Joint name: " + self.name + " | Angle: " + str(self.current))
 
 class arm_control:
     joint1 = joint('joint1', -2.09, 2.09)
@@ -98,11 +104,11 @@ class arm_control:
         
     def print_joints(self):
         print('Positions Set: '\
-            + str(self.joint1.current) + ' | ' \
-            + str(self.joint2.current) + ' | ' \
-            + str(self.joint3.current) + ' | ' \
-            + str(self.joint4.current) + ' | ' \
-            + str(self.joint5.current))
+            + str(round(self.joint1.current,3)) + ' | ' \
+            + str(round(self.joint2.current,3)) + ' | ' \
+            + str(round(self.joint3.current,3)) + ' | ' \
+            + str(round(self.joint4.current,3)) + ' | ' \
+            + str(round(self.joint5.current,3)))
         
     msg = '===\nSet Arm Joints by pressing 1, 2, 3, 4, 5\n\n\
     W: Increment\n\
