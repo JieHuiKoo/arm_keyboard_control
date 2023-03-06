@@ -42,7 +42,6 @@ class joint:
             self.current = self.max
         if self.current < self.min:
             self.current = self.min
-        # print("Joint name: " + self.name + " | Angle: " + str(self.current))
 
 class arm_control:
     joint1 = joint('joint1', -2.09, 2.09)
