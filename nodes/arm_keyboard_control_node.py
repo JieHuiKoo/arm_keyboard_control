@@ -4,11 +4,9 @@ import rospy
 
 from std_msgs.msg import Float64
 
-import sys, select, termios, tty
-
 from pynput import keyboard
 
-import time
+import time, math
 
 timedelay = 1
 
@@ -54,6 +52,14 @@ class arm_control:
         ']' : [ 0, 0, 0, 1, 0],
         '\\': [ 0, 0, 0, 0, 1]
     }
+
+    def rad_to_deg(self, rad):
+        deg = rad * 180/math.pi
+        return deg
+    
+    def deg_to_rad(self, deg):
+        rad = deg * math.pi/180
+        return rad
 
     def set_delta_angle(self, key):
         self.delta_angle = self.delta_angle_bindings[key]
@@ -104,11 +110,11 @@ class arm_control:
         
     def print_joints(self):
         print('Positions Set: '\
-            + str(round(self.joint1.current,3)) + ' | ' \
-            + str(round(self.joint2.current,3)) + ' | ' \
-            + str(round(self.joint3.current,3)) + ' | ' \
-            + str(round(self.joint4.current,3)) + ' | ' \
-            + str(round(self.joint5.current,3)))
+            + str(round(self.rad_to_deg(self.joint1.current),3)) + ' | ' \
+            + str(round(self.rad_to_deg(self.joint2.current),3)) + ' | ' \
+            + str(round(self.rad_to_deg(self.joint3.current),3)) + ' | ' \
+            + str(round(self.rad_to_deg(self.joint4.current),3)) + ' | ' \
+            + str(round(self.rad_to_deg(self.joint5.current),3)))
         
     msg = '===\nSet Arm Joints by pressing 1, 2, 3, 4, 5\n\n\
     W: Increment\n\
@@ -163,7 +169,7 @@ def on_release(key):
             hiwonder.set_delta_angle(key.char)
     
         print("Currently changing joint: " + str(hiwonder.currently_changing_joint))
-        print("Delta Angle Set: " + str(hiwonder.delta_angle))
+        print("Delta Angle Set: " + str(hiwonder.rad_to_deg(hiwonder.delta_angle)))
         hiwonder.print_joints()
 
         # ADD SEND SERVICE REQUEST HERE
@@ -180,7 +186,7 @@ def start_node():
 
     # Collect events until released
     print("Currently changing joint: " + str(hiwonder.currently_changing_joint))
-    print("Delta Angle Set: " + str(hiwonder.delta_angle))
+    print("Delta Angle Set: " + str(hiwonder.rad_to_deg(hiwonder.delta_angle)))
     hiwonder.print_joints()
 
     with keyboard.Listener(
