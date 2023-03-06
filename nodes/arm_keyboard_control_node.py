@@ -51,7 +51,6 @@ class arm_control:
 
     def set_delta_angle(self, key):
         self.delta_angle = self.delta_angle_bindings[key]
-        print("Delta Angle Set: " + str(self.delta_angle))
 
     def set_currently_changing_joint(self, joint_num):
         self.currently_changing_joint = joint_num
@@ -70,9 +69,7 @@ class arm_control:
             self.joint4.update_angle(delta_angle)
         elif joint_num == 5:
             self.joint5.update_angle(delta_angle)
-        
-        self.print_joints()
-    
+            
     def decrement_arm_joint(self):
         joint_num = self.currently_changing_joint
         delta_angle = self.delta_angle * -1
@@ -88,8 +85,6 @@ class arm_control:
         elif joint_num == 5:
             self.joint5.update_angle(delta_angle)
         
-        self.print_joints()
-
     def set_position(self, key):
         array = self.positionBindings[key]
 
@@ -99,7 +94,7 @@ class arm_control:
         self.joint4.current = array[3]
         self.joint5.current = array[4]
 
-        print("Setting Position Binding: " + key.char)
+        print("\nSetting Position Binding: " + key)
         
     def print_joints(self):
         print('Positions Set: '\
@@ -143,7 +138,6 @@ def on_release(key):
         key))
     
     print(hiwonder.msg)
-    print("Currently changing joint: " + str(hiwonder.currently_changing_joint))
 
     try:
         # If the key is one of the preset positionBindings
@@ -158,6 +152,16 @@ def on_release(key):
         
         if key.char == 's':
             hiwonder.decrement_arm_joint()
+
+        if key.char in hiwonder.delta_angle_bindings.keys():
+            hiwonder.set_delta_angle(key.char)
+    
+        print("Currently changing joint: " + str(hiwonder.currently_changing_joint))
+        print("Delta Angle Set: " + str(hiwonder.delta_angle))
+        hiwonder.print_joints()
+
+        # ADD SEND SERVICE REQUEST HERE
+
     
     except AttributeError:
         if key == keyboard.Key.esc:
@@ -169,6 +173,10 @@ def start_node():
     rospy.loginfo('[arm_keyboard_control]: node started')
 
     # Collect events until released
+    print("Currently changing joint: " + str(hiwonder.currently_changing_joint))
+    print("Delta Angle Set: " + str(hiwonder.delta_angle))
+    hiwonder.print_joints()
+
     with keyboard.Listener(
         on_press=on_press,
         on_release=on_release) as listener:
