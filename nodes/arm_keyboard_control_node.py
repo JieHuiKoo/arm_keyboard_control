@@ -8,7 +8,26 @@ from pynput import keyboard
 
 import time, math
 
-timedelay = 1
+from arm_keyboard_control.srv import *
+
+def send_joints_request(arm):
+    rospy.wait_for_service('arm/setJoints')
+    try:
+        send_joints_handle = rospy.ServiceProxy('arm/setJoints', SetJointTarget)
+        
+        send_joints_request = SetJointTargetRequest()
+        send_joints_request.joint1Value = arm.joint1.current
+        send_joints_request.joint2Value = arm.joint2.current
+        send_joints_request.joint3Value = arm.joint3.current
+        send_joints_request.joint4Value = arm.joint4.current
+        send_joints_request.joint5Value = arm.joint5.current
+
+        resp1 = send_joints_handle(send_joints_request)
+        
+        return resp1
+    
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
 
 class joint:
     def __init__(self, name, min, max):
@@ -173,6 +192,7 @@ def on_release(key):
         hiwonder.print_joints()
 
         # ADD SEND SERVICE REQUEST HERE
+        # send_joints_request(hiwonder)
 
     
     except AttributeError:

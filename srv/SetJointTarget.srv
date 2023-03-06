@@ -1,0 +1,7 @@
+float64 joint1Value
+float64 joint2Value
+float64 joint3Value
+float64 joint4Value
+float64 joint5Value
+---
+bool result
